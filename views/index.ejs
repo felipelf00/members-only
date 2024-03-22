@@ -6,8 +6,9 @@
     <title>Exclusivo para membros</title>
   </head>
   <body>
-    <% if (currentUser) {%>
+    <% if (currentUser) { %>
     <h1>Bem-vindo, <%= currentUser.username %></h1>
+    <a href="/new">Nova mensagem</a>
     <a href="/log-out">Sair</a>
     <% } else { %>
     <h1>Entre na sua conta:</h1>
@@ -18,6 +19,22 @@
       <input name="password" type="password" />
       <button>Login</button>
     </form>
-    <%}%>
+    <% } %>
+    <h3>Mensagens:</h3>
+    <% if (!currentUser) { %>
+    <p>Faça login para visualizar datas e autores das mensagens</p>
+    <% } %> <% messages.forEach(function(message) { %>
+    <div class="message">
+      <p><%= message.message %></p>
+      <!-- prettier-ignore -->
+      <p>
+        Postado por: <%= currentUser ? message.user.username : "(somente para membros)" %>
+      </p>
+      <!-- prettier-ignore -->
+      <p>
+        Data: <%= currentUser ? message.formattedDate + " - " + message.formattedTime : "(somente para membros)" %>
+      </p>
+    </div>
+    <% }); %>
   </body>
 </html>

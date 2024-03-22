@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const Message = require("../models/message");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 
-router.get("/", (req, res) => res.render("index"));
+router.get("/", async (req, res) => {
+  const messages = await Message.find().populate("user");
+  res.render("index", { messages: messages });
+});
 
 router.get("/sign-up", (req, res) => res.render("signup"));
 
@@ -19,9 +23,6 @@ router.post("/sign-up", async (req, res, next) => {
         username: req.body.username,
         password: hashedPassword,
       });
-      console.log(user);
-      console.log("req pass: " + req.body.password);
-      console.log("hashed pass: " + hashedPassword);
 
       const result = await user.save();
       res.redirect("/");
@@ -38,6 +39,25 @@ router.post(
     failureRedirect: "/",
   })
 );
+
+router.get("/new", (req, res) => {
+  res.render("new-message");
+});
+
+router.post("/new", async (req, res) => {
+  try {
+    const msg = new Message({
+      message: req.body.message,
+      user: res.locals.currentUser._id,
+      postedAt: Date.now(),
+    });
+
+    await msg.save();
+    res.redirect("/");
+  } catch (err) {
+    return next(err);
+  }
+});
 
 router.get("/log-out", (req, res, next) => {
   req.logout((err) => {
