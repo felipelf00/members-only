@@ -4,12 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exclusivo para membros</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
   </head>
   <body>
     <% if (currentUser) { %>
-    <h1>Bem-vindo, <%= currentUser.username %></h1>
-    <a href="/new">Nova mensagem</a>
-    <a href="/log-out">Sair</a>
+    <h1 class="tit-huge">Olá,</h1>
+    <h1 class="tit-big"><%= currentUser.username %></h1>
+
+    <div class="my-8">
+      <a class="btn-alt" href="/log-out">Log-out</a>
+    </div>
+
+    <div class="my-16">
+      <a class="btn" href="/new">Nova mensagem</a>
+    </div>
     <% } else { %>
     <h1>Entre na sua conta:</h1>
     <form action="/log-in" method="POST">
@@ -19,10 +27,10 @@
       <input name="password" type="password" />
       <button>Login</button>
     </form>
-    <h3>Não tem conta?</h3>
+    <h2>Não tem conta?</h2>
     <a href="/sign-up">Crie sua conta</a>
     <% } %>
-    <h3>Mensagens:</h3>
+    <h2>Mensagens:</h2>
     <% if (!currentUser) { %>
     <p>Faça login para visualizar datas e autores das mensagens</p>
     <% } %> <% messages.forEach(function(message) { %>
@@ -30,11 +38,7 @@
       <p><%= message.message %></p>
       <!-- prettier-ignore -->
       <p>
-        Postado por: <%= currentUser ? message.user.username : "(somente para membros)" %>
-      </p>
-      <!-- prettier-ignore -->
-      <p>
-        Data: <%= currentUser ? message.formattedDate + " - " + message.formattedTime : "(somente para membros)" %>
+        Postado por: <%= currentUser ? message.user.username : "(somente para membros)" %> | Data: <%= currentUser ? message.formattedDate + " - " + message.formattedTime : "(somente para membros)" %>
       </p>
     </div>
     <% }); %>
