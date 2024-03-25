@@ -7,17 +7,24 @@
     <link rel="stylesheet" type="text/css" href="./styles.css" />
   </head>
   <body>
-    <h1>Insira seus dados:</h1>
+    <h1 class="tit-big">Insira seus dados:</h1>
+    <!-- prettier-ignore-->
+    <% if (errors && errors.length > 0) { %>
+      <% errors.forEach(function(error) { %>
+    <div class="tomato"><%= error.msg %></div>
+    <% }); %> <% } %>
     <form action="" method="POST">
       <label for="username">Usuário</label>
-      <input name="username" type="text" />
+      <input name="username" type="text" required />
       <label for="name">Nome completo</label>
-      <input name="name" type="text" />
+      <input name="name" type="text" required />
+      <label for="admin">É administrador? Insira seu código:</label>
+      <input name="admin" type="password" />
       <label for="password">Senha</label>
-      <input name="password" type="password" />
+      <input name="password" type="password" required />
       <label for="confirm">Confirme sua senha:</label>
-      <input name="confirm" type="password" />
-      <button>Enviar</button>
+      <input name="confirm" type="password" required />
+      <button class="btn my-8">Enviar</button>
     </form>
   </body>
 </html>

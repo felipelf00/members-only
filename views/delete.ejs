@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excluir mensagem</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
+  </head>
+  <body>
+    <h1 class="tit-huge">Excluir</h1>
+    <h1 class="tit-big">Mensagem:</h1>
+    <%if (!currentUser || !currentUser.admin) {%>
+    <h2>Você não tem permissão para realizar essa operação.</h2>
+    <%} else {%>
+    <div class="message">
+      <p><%= message.message %></p>
+      <!-- prettier-ignore -->
+      <p>
+        Postado por: <%= currentUser ? message.user.username : "(somente para membros)" %> | Data: <%= currentUser ? message.formattedDate + " - " + message.formattedTime : "(somente para membros)" %>
+      </p>
+    </div>
+    <form action="/delete/<%=message._id%>" method="POST">
+      <input type="hidden" name="messageId" value="<%= message._id %>" />
+      <button class="btn" type="submit">Delete Message</button>
+    </form>
+    <%}%>
+  </body>
+</html>

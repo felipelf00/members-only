@@ -9,7 +9,11 @@
   <body>
     <h1 class="tit-huge">Nova</h1>
     <h1 class="tit-big">Mensagem:</h1>
-
+    <!-- prettier-ignore-->
+    <% if (errors && errors.length > 0) { %>
+          <% errors.forEach(function(error) { %>
+    <div class="tomato"><%= error.msg %></div>
+    <% }); %> <% } %>
     <form class="msg-form" action="" method="POST">
       <!-- <label for="message">Mensagem:</label> -->
       <textarea class="block msg-input" name="message"></textarea>

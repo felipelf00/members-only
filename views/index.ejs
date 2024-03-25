@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exclusivo para membros</title>
-    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
   <body>
     <% if (currentUser) { %>
@@ -19,27 +19,38 @@
       <a class="btn" href="/new">Nova mensagem</a>
     </div>
     <% } else { %>
-    <h1>Entre na sua conta:</h1>
+    <h1 class="tit-huge">Login:</h1>
     <form action="/log-in" method="POST">
       <label for="username">Usuário</label>
       <input name="username" type="text" />
       <label for="password">Senha</label>
       <input name="password" type="password" />
-      <button>Login</button>
+      <button class="btn-alt my-4">Login</button>
     </form>
-    <h2>Não tem conta?</h2>
-    <a href="/sign-up">Crie sua conta</a>
+    <!-- prettier-ignore-->
+    <% if (errors && errors.length > 0) { %>
+          <% errors.forEach(function(error) { %>
+    <div class="tomato"><%= error.msg %></div>
+    <% }); %> <% } %>
+    <div class="new-acc-container">
+      <h2>Não tem conta?</h2>
+      <a class="btn my-4" href="/sign-up">Crie sua conta</a>
+    </div>
     <% } %>
     <h2>Mensagens:</h2>
     <% if (!currentUser) { %>
     <p>Faça login para visualizar datas e autores das mensagens</p>
     <% } %> <% messages.forEach(function(message) { %>
     <div class="message">
-      <p><%= message.message %></p>
+      <% if (currentUser && currentUser.admin) { %>
+      <a class="delete" href="delete/<%=message._id%>">excluir</a>
+      <%}%>
+      <pre><%= message.message %></pre>
+      <hr />
       <!-- prettier-ignore -->
-      <p>
+      <div>
         Postado por: <%= currentUser ? message.user.username : "(somente para membros)" %> | Data: <%= currentUser ? message.formattedDate + " - " + message.formattedTime : "(somente para membros)" %>
-      </p>
+      </div>
     </div>
     <% }); %>
   </body>
