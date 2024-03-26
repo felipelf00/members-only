@@ -10,13 +10,19 @@ const User = require("./models/user");
 const routes = require("./routes/routes");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
+const debug = require("debug")("myapp:error");
+const compression = require("compression");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const mongoDb = process.env.MONGO_URI;
 mongoose.connect(mongoDb);
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "mongo connection error"));
+// db.on("error", console.error.bind(console, "mongo connection error"));
+db.on("error", debug.bind(null, "mongo connection error"));
 
 const app = express();
+app.use(helmet());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -75,23 +81,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.get("/", (req, res) => res.render("index"));
+app.use(compression());
 
-// app.get("/sign-up", (req, res) => res.render("signup"));
-
-// app.post("/sign-up", async (req, res, next) => {
-//   try {
-//     const user = new User({
-//       name: req.body.name,
-//       username: req.body.username,
-//       passsword: req.body.password,
-//     });
-//     const result = await user.save();
-//     res.redirect("/");
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 
 app.use("/", routes);
 

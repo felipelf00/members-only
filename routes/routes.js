@@ -5,10 +5,10 @@ const Message = require("../models/message");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const debug = require("debug")("myapp:error");
 
 router.get("/", async (req, res) => {
   const messages = await Message.find().sort({ postedAt: -1 }).populate("user");
-  // console.log("user: " + res.locals.currentUser);
   res.render("index", { messages: messages, errors: [] });
 });
 
@@ -42,7 +42,7 @@ router.post(
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.render("/sign-up", { errors: errors.array() });
+      return res.render("signup", { errors: errors.array() });
     }
 
     try {
@@ -60,7 +60,7 @@ router.post(
         });
 
         const result = await user.save();
-        res.redirect("/", { errors: [] });
+        res.redirect("/");
       });
     } catch (err) {
       return next(err);
@@ -170,7 +170,9 @@ router.get("/delete/:id", async (req, res, next) => {
     );
     res.render("delete", { message: message });
   } catch (error) {
-    console.error("Error in route handler:", error);
+    // console.error("Error in route handler:", error);
+    debug("Error in route handler:", error);
+
     res.status(500).send("An error occurred");
   }
 });
@@ -180,7 +182,8 @@ router.post("/delete/:id", async (req, res, next) => {
     await Message.findByIdAndDelete(req.body.messageId);
     return res.redirect("/");
   } catch (err) {
-    console.err(err);
+    // console.err(err);
+    debug(err);
     return res.status(500).send("Erro ao excluir mensagem");
   }
 });
